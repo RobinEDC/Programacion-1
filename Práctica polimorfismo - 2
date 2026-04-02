@@ -1,0 +1,133 @@
+using System;
+using System.Collections.Generic;
+
+namespace ProyectoAvesPolimorfas
+{
+    public class Ave
+    {
+        public string Nombre { get; set; }
+        public string Color { get; set; }
+        public int Edad { get; set; }
+
+        public Ave(string nombre, string color, int edad)
+        {
+            Nombre = nombre;
+            Color = color;
+            Edad = edad;
+        }
+
+        public virtual void Volar()
+        {
+            Console.WriteLine($"{Nombre} vuela de forma general.");
+        }
+
+        public virtual void Cantar()
+        {
+            Console.WriteLine($"{Nombre} emite un sonido general.");
+        }
+
+        public virtual void Comer()
+        {
+            Console.WriteLine($"{Nombre} está comiendo.");
+        }
+
+        public virtual void MostrarInformacion()
+        {
+            Console.WriteLine($"Nombre: {Nombre}");
+            Console.WriteLine($"Color: {Color}");
+            Console.WriteLine($"Edad: {Edad} años");
+        }
+    }
+
+    public class Aguila : Ave
+    {
+        public Aguila(string nombre, string color, int edad) : base(nombre, color, edad)
+        {
+        }
+
+        public override void Volar()
+        {
+            Console.WriteLine($"{Nombre} vuela a gran altura y con mucha precisión.");
+        }
+
+        public override void Cantar()
+        {
+            Console.WriteLine($"{Nombre} emite un chillido fuerte.");
+        }
+
+        public override void Comer()
+        {
+            Console.WriteLine($"{Nombre} caza y come carne.");
+        }
+    }
+
+    public class Loro : Ave
+    {
+        public Loro(string nombre, string color, int edad) : base(nombre, color, edad)
+        {
+        }
+
+        public override void Volar()
+        {
+            Console.WriteLine($"{Nombre} vuela rápidamente entre los árboles.");
+        }
+
+        public override void Cantar()
+        {
+            Console.WriteLine($"{Nombre} repite palabras y sonidos.");
+        }
+
+        public override void Comer()
+        {
+            Console.WriteLine($"{Nombre} come semillas y frutas.");
+        }
+    }
+
+    public class Pinguino : Ave
+    {
+        public Pinguino(string nombre, string color, int edad) : base(nombre, color, edad)
+        {
+        }
+
+        public override void Volar()
+        {
+            Console.WriteLine($"{Nombre} no puede volar, pero nada excelentemente.");
+        }
+
+        public override void Cantar()
+        {
+            Console.WriteLine($"{Nombre} emite sonidos cortos y graves.");
+        }
+
+        public override void Comer()
+        {
+            Console.WriteLine($"{Nombre} come peces.");
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            List<Ave> aves = new List<Ave>
+            {
+                new Aguila("Águila Real", "Marrón", 5),
+                new Loro("Loro Verde", "Verde", 2),
+                new Pinguino("Pingüi", "Blanco y negro", 4)
+            };
+
+            Console.WriteLine("PROYECTO DE POLIMORFISMO CON AVES");
+            Console.WriteLine();
+
+            foreach (Ave ave in aves)
+            {
+                Console.WriteLine("-----------------------------------");
+                ave.MostrarInformacion();
+                ave.Volar();
+                ave.Cantar();
+                ave.Comer();
+                Console.WriteLine();
+            }
+        }
+    }
+}
