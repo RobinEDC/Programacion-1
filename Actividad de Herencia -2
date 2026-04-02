@@ -1,0 +1,440 @@
+using System;
+
+namespace TrabajoHerenciaPOO
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+
+            MostrarPortada();
+            MostrarInvestigacion();
+
+            Console.WriteLine("\nPresiona una tecla para ver los 5 ejemplos...");
+            Console.ReadKey();
+
+            Console.Clear();
+            Ejemplo1Animales();
+
+            Console.WriteLine("\nPresiona una tecla para continuar al ejemplo 2...");
+            Console.ReadKey();
+
+            Console.Clear();
+            Ejemplo2Vehiculos();
+
+            Console.WriteLine("\nPresiona una tecla para continuar al ejemplo 3...");
+            Console.ReadKey();
+
+            Console.Clear();
+            Ejemplo3Empleados();
+
+            Console.WriteLine("\nPresiona una tecla para continuar al ejemplo 4...");
+            Console.ReadKey();
+
+            Console.Clear();
+            Ejemplo4Electrodomesticos();
+
+            Console.WriteLine("\nPresiona una tecla para continuar al ejemplo 5...");
+            Console.ReadKey();
+
+            Console.Clear();
+            Ejemplo5CuentasBancarias();
+
+            Console.WriteLine("\nPresiona una tecla para salir...");
+            Console.ReadKey();
+        }
+
+        static void MostrarPortada()
+        {
+            Console.WriteLine("===============================================");
+            Console.WriteLine("TRABAJO DE INVESTIGACIÓN Y EJEMPLOS DE HERENCIA");
+            Console.WriteLine("PROGRAMACIÓN ORIENTADA A OBJETOS");
+            Console.WriteLine("===============================================");
+        }
+
+        static void MostrarInvestigacion()
+        {
+            Console.WriteLine("\nINTRODUCCIÓN");
+            Console.WriteLine("La herencia es uno de los pilares de la Programación Orientada a Objetos.");
+            Console.WriteLine("Permite que una clase hija reutilice atributos y métodos de una clase padre.");
+            Console.WriteLine("Gracias a esto se evita repetir código y se logra una mejor organización del programa.");
+
+            Console.WriteLine("\n¿QUÉ ES LA HERENCIA?");
+            Console.WriteLine("La herencia es un mecanismo mediante el cual una clase derivada puede tomar");
+            Console.WriteLine("características de una clase base. La clase hija puede usar esos elementos,");
+            Console.WriteLine("modificarlos o agregar otros nuevos según lo que necesite.");
+
+            Console.WriteLine("\nIMPORTANCIA DE LA HERENCIA");
+            Console.WriteLine("- Reutiliza código.");
+            Console.WriteLine("- Reduce duplicación.");
+            Console.WriteLine("- Mejora la organización del sistema.");
+            Console.WriteLine("- Facilita el mantenimiento.");
+            Console.WriteLine("- Permite representar relaciones del mundo real.");
+
+            Console.WriteLine("\nFORMAS DE HERENCIA");
+            Console.WriteLine("1. Herencia simple:");
+            Console.WriteLine("   Una clase hereda de una sola clase base.");
+            Console.WriteLine("   Ejemplo: Perro hereda de Animal.");
+
+            Console.WriteLine("\n2. Herencia multinivel:");
+            Console.WriteLine("   Una clase hereda de otra clase derivada.");
+            Console.WriteLine("   Ejemplo: Animal -> Mamifero -> Perro.");
+
+            Console.WriteLine("\n3. Herencia jerárquica:");
+            Console.WriteLine("   Varias clases hijas heredan de una misma clase padre.");
+            Console.WriteLine("   Ejemplo: Animal -> Perro, Gato, Ave.");
+
+            Console.WriteLine("\n4. Herencia múltiple:");
+            Console.WriteLine("   Una clase hereda de varias clases padre.");
+            Console.WriteLine("   En C# esto no se aplica directamente con clases,");
+            Console.WriteLine("   aunque puede simularse parcialmente con interfaces.");
+
+            Console.WriteLine("\n5. Herencia híbrida:");
+            Console.WriteLine("   Es una combinación de varios tipos de herencia.");
+            Console.WriteLine("   En C# normalmente se trabaja mezclando herencia de clases e interfaces.");
+
+            Console.WriteLine("\nVENTAJAS");
+            Console.WriteLine("- Permite reutilizar código.");
+            Console.WriteLine("- Hace el sistema más claro.");
+            Console.WriteLine("- Ayuda a extender el programa con facilidad.");
+
+            Console.WriteLine("\nDESVENTAJAS");
+            Console.WriteLine("- Puede complicar el diseño si se usa mal.");
+            Console.WriteLine("- Crea dependencia entre clases.");
+            Console.WriteLine("- Una jerarquía mal hecha dificulta el mantenimiento.");
+
+            Console.WriteLine("\nCONCLUSIÓN");
+            Console.WriteLine("La herencia es una herramienta muy útil en POO porque permite organizar mejor");
+            Console.WriteLine("las clases, reducir repetición y representar distintos casos de uso.");
+            Console.WriteLine("A continuación se muestran cinco ejemplos aplicados en diferentes contextos.");
+        }
+
+        static void Ejemplo1Animales()
+        {
+            Console.WriteLine("=================================");
+            Console.WriteLine("EJEMPLO 1: HERENCIA CON ANIMALES");
+            Console.WriteLine("=================================");
+
+            Animal perro = new Perro("Rocky", 3);
+            Animal gato = new Gato("Michi", 2);
+
+            perro.MostrarDatos();
+            perro.HacerSonido();
+
+            Console.WriteLine();
+
+            gato.MostrarDatos();
+            gato.HacerSonido();
+        }
+
+        static void Ejemplo2Vehiculos()
+        {
+            Console.WriteLine("==================================");
+            Console.WriteLine("EJEMPLO 2: HERENCIA CON VEHÍCULOS");
+            Console.WriteLine("==================================");
+
+            Vehiculo carro = new Carro("Toyota", "Corolla", 4);
+            Vehiculo moto = new Motocicleta("Honda", "CBR", true);
+
+            carro.Encender();
+            carro.MostrarDatos();
+
+            Console.WriteLine();
+
+            moto.Encender();
+            moto.MostrarDatos();
+        }
+
+        static void Ejemplo3Empleados()
+        {
+            Console.WriteLine("==================================");
+            Console.WriteLine("EJEMPLO 3: HERENCIA CON EMPLEADOS");
+            Console.WriteLine("==================================");
+
+            Empleado gerente = new Gerente("Laura", 30000, 10000);
+            Empleado vendedor = new Vendedor("Carlos", 20000, 5000);
+
+            gerente.MostrarDatos();
+
+            Console.WriteLine();
+
+            vendedor.MostrarDatos();
+        }
+
+        static void Ejemplo4Electrodomesticos()
+        {
+            Console.WriteLine("=========================================");
+            Console.WriteLine("EJEMPLO 4: HERENCIA CON ELECTRODOMÉSTICOS");
+            Console.WriteLine("=========================================");
+
+            Electrodomestico lavadora = new Lavadora("Lavadora automática", "LG");
+            Electrodomestico microondas = new Microondas("Microondas digital", "Samsung");
+
+            lavadora.Funcionar();
+            microondas.Funcionar();
+        }
+
+        static void Ejemplo5CuentasBancarias()
+        {
+            Console.WriteLine("=========================================");
+            Console.WriteLine("EJEMPLO 5: HERENCIA CON CUENTAS BANCARIAS");
+            Console.WriteLine("=========================================");
+
+            CuentaBancaria ahorro = new CuentaAhorro("Ana", 15000, 3.5);
+            CuentaBancaria corriente = new CuentaCorriente("Luis", 8000, 5000);
+
+            ahorro.MostrarCuenta();
+
+            Console.WriteLine();
+
+            corriente.MostrarCuenta();
+        }
+    }
+
+    public class Animal
+    {
+        public string Nombre { get; set; }
+        public int Edad { get; set; }
+
+        public Animal(string nombre, int edad)
+        {
+            Nombre = nombre;
+            Edad = edad;
+        }
+
+        public virtual void HacerSonido()
+        {
+            Console.WriteLine($"{Nombre} hace un sonido.");
+        }
+
+        public virtual void MostrarDatos()
+        {
+            Console.WriteLine($"Nombre: {Nombre}");
+            Console.WriteLine($"Edad: {Edad}");
+        }
+    }
+
+    public class Perro : Animal
+    {
+        public Perro(string nombre, int edad) : base(nombre, edad)
+        {
+        }
+
+        public override void HacerSonido()
+        {
+            Console.WriteLine($"{Nombre} ladra: Guau guau");
+        }
+    }
+
+    public class Gato : Animal
+    {
+        public Gato(string nombre, int edad) : base(nombre, edad)
+        {
+        }
+
+        public override void HacerSonido()
+        {
+            Console.WriteLine($"{Nombre} maúlla: Miau");
+        }
+    }
+
+    public class Vehiculo
+    {
+        public string Marca { get; set; }
+        public string Modelo { get; set; }
+
+        public Vehiculo(string marca, string modelo)
+        {
+            Marca = marca;
+            Modelo = modelo;
+        }
+
+        public virtual void Encender()
+        {
+            Console.WriteLine($"El vehículo {Marca} {Modelo} ha sido encendido.");
+        }
+
+        public virtual void MostrarDatos()
+        {
+            Console.WriteLine($"Marca: {Marca}");
+            Console.WriteLine($"Modelo: {Modelo}");
+        }
+    }
+
+    public class Carro : Vehiculo
+    {
+        public int Puertas { get; set; }
+
+        public Carro(string marca, string modelo, int puertas) : base(marca, modelo)
+        {
+            Puertas = puertas;
+        }
+
+        public override void MostrarDatos()
+        {
+            base.MostrarDatos();
+            Console.WriteLine($"Puertas: {Puertas}");
+        }
+    }
+
+    public class Motocicleta : Vehiculo
+    {
+        public bool TieneCasco { get; set; }
+
+        public Motocicleta(string marca, string modelo, bool tieneCasco) : base(marca, modelo)
+        {
+            TieneCasco = tieneCasco;
+        }
+
+        public override void MostrarDatos()
+        {
+            base.MostrarDatos();
+            Console.WriteLine($"Incluye casco: {TieneCasco}");
+        }
+    }
+
+    public class Empleado
+    {
+        public string Nombre { get; set; }
+        public double SalarioBase { get; set; }
+
+        public Empleado(string nombre, double salarioBase)
+        {
+            Nombre = nombre;
+            SalarioBase = salarioBase;
+        }
+
+        public virtual double CalcularSalario()
+        {
+            return SalarioBase;
+        }
+
+        public virtual void MostrarDatos()
+        {
+            Console.WriteLine($"Nombre: {Nombre}");
+            Console.WriteLine($"Salario final: {CalcularSalario():F2}");
+        }
+    }
+
+    public class Gerente : Empleado
+    {
+        public double Bono { get; set; }
+
+        public Gerente(string nombre, double salarioBase, double bono) : base(nombre, salarioBase)
+        {
+            Bono = bono;
+        }
+
+        public override double CalcularSalario()
+        {
+            return SalarioBase + Bono;
+        }
+    }
+
+    public class Vendedor : Empleado
+    {
+        public double Comision { get; set; }
+
+        public Vendedor(string nombre, double salarioBase, double comision) : base(nombre, salarioBase)
+        {
+            Comision = comision;
+        }
+
+        public override double CalcularSalario()
+        {
+            return SalarioBase + Comision;
+        }
+    }
+
+    public class Electrodomestico
+    {
+        public string Nombre { get; set; }
+        public string Marca { get; set; }
+
+        public Electrodomestico(string nombre, string marca)
+        {
+            Nombre = nombre;
+            Marca = marca;
+        }
+
+        public virtual void Funcionar()
+        {
+            Console.WriteLine($"{Nombre} de marca {Marca} está funcionando.");
+        }
+    }
+
+    public class Lavadora : Electrodomestico
+    {
+        public Lavadora(string nombre, string marca) : base(nombre, marca)
+        {
+        }
+
+        public override void Funcionar()
+        {
+            Console.WriteLine($"{Nombre} está lavando la ropa.");
+        }
+    }
+
+    public class Microondas : Electrodomestico
+    {
+        public Microondas(string nombre, string marca) : base(nombre, marca)
+        {
+        }
+
+        public override void Funcionar()
+        {
+            Console.WriteLine($"{Nombre} está calentando la comida.");
+        }
+    }
+
+    public class CuentaBancaria
+    {
+        public string Titular { get; set; }
+        public double Saldo { get; set; }
+
+        public CuentaBancaria(string titular, double saldo)
+        {
+            Titular = titular;
+            Saldo = saldo;
+        }
+
+        public virtual void MostrarCuenta()
+        {
+            Console.WriteLine($"Titular: {Titular}");
+            Console.WriteLine($"Saldo: {Saldo:F2}");
+        }
+    }
+
+    public class CuentaAhorro : CuentaBancaria
+    {
+        public double Interes { get; set; }
+
+        public CuentaAhorro(string titular, double saldo, double interes) : base(titular, saldo)
+        {
+            Interes = interes;
+        }
+
+        public override void MostrarCuenta()
+        {
+            base.MostrarCuenta();
+            Console.WriteLine($"Interés: {Interes}%");
+        }
+    }
+
+    public class CuentaCorriente : CuentaBancaria
+    {
+        public double LimiteSobregiro { get; set; }
+
+        public CuentaCorriente(string titular, double saldo, double limiteSobregiro) : base(titular, saldo)
+        {
+            LimiteSobregiro = limiteSobregiro;
+        }
+
+        public override void MostrarCuenta()
+        {
+            base.MostrarCuenta();
+            Console.WriteLine($"Límite de sobregiro: {LimiteSobregiro:F2}");
+        }
+    }
+}
