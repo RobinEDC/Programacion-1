@@ -1,0 +1,181 @@
+using System;
+using System.Collections.Generic;
+
+namespace PracticaCentralita
+{
+    public abstract class Llamada
+    {
+        private string numOrigen;
+        private string numDestino;
+        private double duracion;
+
+        public string NumOrigen
+        {
+            get { return numOrigen; }
+            set { numOrigen = value; }
+        }
+
+        public string NumDestino
+        {
+            get { return numDestino; }
+            set { numDestino = value; }
+        }
+
+        public double Duracion
+        {
+            get { return duracion; }
+            set
+            {
+                if (value >= 0)
+                    duracion = value;
+                else
+                    duracion = 0;
+            }
+        }
+
+        public Llamada(string numOrigen, string numDestino, double duracion)
+        {
+            NumOrigen = numOrigen;
+            NumDestino = numDestino;
+            Duracion = duracion;
+        }
+
+        public abstract double CalcularPrecio();
+
+        public override string ToString()
+        {
+            return $"Origen: {NumOrigen} | Destino: {NumDestino} | Duración: {Duracion} seg";
+        }
+    }
+
+    public class LlamadaLocal : Llamada
+    {
+        private const double precioSegundo = 0.15;
+
+        public LlamadaLocal(string numOrigen, string numDestino, double duracion)
+            : base(numOrigen, numDestino, duracion)
+        {
+        }
+
+        public override double CalcularPrecio()
+        {
+            return Duracion * precioSegundo;
+        }
+
+        public override string ToString()
+        {
+            return $"Llamada Local -> {base.ToString()} | Costo: {CalcularPrecio():F2}";
+        }
+    }
+
+    public class LlamadaProvincial : Llamada
+    {
+        private int franja;
+
+        public int Franja
+        {
+            get { return franja; }
+            set
+            {
+                if (value >= 1 && value <= 3)
+                    franja = value;
+                else
+                    franja = 1;
+            }
+        }
+
+        public LlamadaProvincial(string numOrigen, string numDestino, double duracion, int franja)
+            : base(numOrigen, numDestino, duracion)
+        {
+            Franja = franja;
+        }
+
+        public override double CalcularPrecio()
+        {
+            double precioSegundo = 0;
+
+            switch (Franja)
+            {
+                case 1:
+                    precioSegundo = 0.20;
+                    break;
+                case 2:
+                    precioSegundo = 0.25;
+                    break;
+                case 3:
+                    precioSegundo = 0.30;
+                    break;
+            }
+
+            return Duracion * precioSegundo;
+        }
+
+        public override string ToString()
+        {
+            return $"Llamada Provincial -> {base.ToString()} | Franja: {Franja} | Costo: {CalcularPrecio():F2}";
+        }
+    }
+
+    public class Centralita
+    {
+        private int cont;
+        private double acum;
+        private List<Llamada> llamadas;
+
+        public Centralita()
+        {
+            cont = 0;
+            acum = 0;
+            llamadas = new List<Llamada>();
+        }
+
+        public int GetTotalLlamadas()
+        {
+            return cont;
+        }
+
+        public double GetTotalFacturado()
+        {
+            return acum;
+        }
+
+        public void RegistrarLlamada(Llamada llamada)
+        {
+            llamadas.Add(llamada);
+            cont++;
+            acum += llamada.CalcularPrecio();
+            Console.WriteLine(llamada.ToString());
+        }
+
+        public void MostrarInforme()
+        {
+            Console.WriteLine();
+            Console.WriteLine("========== INFORME DE LA CENTRALITA ==========");
+            Console.WriteLine($"Total de llamadas registradas: {GetTotalLlamadas()}");
+            Console.WriteLine($"Facturación total: {GetTotalFacturado():F2}");
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Centralita centralita = new Centralita();
+
+            Console.WriteLine("===== REGISTRO DE LLAMADAS =====");
+            Console.WriteLine();
+
+            centralita.RegistrarLlamada(new LlamadaLocal("809-555-1001", "809-555-2001", 60));
+            centralita.RegistrarLlamada(new LlamadaProvincial("809-555-1002", "829-555-2002", 45, 1));
+            centralita.RegistrarLlamada(new LlamadaLocal("809-555-1003", "849-555-2003", 120));
+            centralita.RegistrarLlamada(new LlamadaProvincial("809-555-1004", "809-555-2004", 30, 2));
+            centralita.RegistrarLlamada(new LlamadaProvincial("809-555-1005", "829-555-2005", 80, 3));
+
+            centralita.MostrarInforme();
+
+            Console.WriteLine();
+            Console.WriteLine("Presione una tecla para salir...");
+            Console.ReadKey();
+        }
+    }
+}
