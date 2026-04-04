@@ -1,0 +1,95 @@
+using System;
+using System.Collections.Generic;
+
+namespace RutaDeBus
+{
+    public class Autobus
+    {
+        public string Nombre { get; set; }
+        public int CapacidadTotal { get; set; }
+        public int Pasajeros { get; set; }
+        public double PrecioPasaje { get; set; }
+
+        public Autobus(string nombre, int capacidadTotal, int pasajeros, double precioPasaje)
+        {
+            Nombre = nombre;
+            CapacidadTotal = capacidadTotal;
+            Pasajeros = pasajeros;
+            PrecioPasaje = precioPasaje;
+        }
+
+        public double CalcularVentas()
+        {
+            return Pasajeros * PrecioPasaje;
+        }
+
+        public int AsientosDisponibles()
+        {
+            return CapacidadTotal - Pasajeros;
+        }
+
+        public void MostrarResumen()
+        {
+            Console.WriteLine($"{Nombre} {Pasajeros} Pasajeros Ventas {CalcularVentas():N0} quedan {AsientosDisponibles()} asientos disponibles");
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+
+            Console.WriteLine("=====================================");
+            Console.WriteLine(" SISTEMA DE COBRO DE PASAJE DE BUS");
+            Console.WriteLine("=====================================");
+            Console.WriteLine();
+
+            string ruta = "Ruta Santo Domingo - Santiago";
+            double distanciaKm = 155.5;
+            string horario = "8:00 AM";
+            string conductor = "José Ramírez";
+
+            Console.WriteLine("DATOS DE LA RUTA");
+            Console.WriteLine($"Ruta: {ruta}");
+            Console.WriteLine($"Distancia: {distanciaKm} km");
+            Console.WriteLine($"Horario: {horario}");
+            Console.WriteLine($"Conductor: {conductor}");
+            Console.WriteLine();
+
+            List<Autobus> autobuses = new List<Autobus>
+            {
+                new Autobus("Auto Bus Plantinum", 22, 5, 1000),
+                new Autobus("Auto Bus Gold", 15, 3, 1333.33)
+            };
+
+            Console.WriteLine("RESULTADO:");
+            foreach (Autobus bus in autobuses)
+            {
+                bus.MostrarResumen();
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("DETALLE GENERAL");
+
+            double totalVentas = 0;
+            int totalPasajeros = 0;
+            int totalAsientosDisponibles = 0;
+
+            foreach (Autobus bus in autobuses)
+            {
+                totalVentas += bus.CalcularVentas();
+                totalPasajeros += bus.Pasajeros;
+                totalAsientosDisponibles += bus.AsientosDisponibles();
+            }
+
+            Console.WriteLine($"Total de pasajeros transportados: {totalPasajeros}");
+            Console.WriteLine($"Total de ventas: {totalVentas:N0}");
+            Console.WriteLine($"Total de asientos disponibles: {totalAsientosDisponibles}");
+
+            Console.WriteLine();
+            Console.WriteLine("Presione una tecla para salir...");
+            Console.ReadKey();
+        }
+    }
+}
