@@ -1,0 +1,644 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+/*
+========================================
+SISTEMA: BIBLIOTECA DE VIDEOJUEGOS
+Archivo único para Program.cs
+========================================
+*/
+
+namespace BibliotecaVideojuegosApp
+{
+    /*
+    ----------------------------------------
+    CLASE BASE: VIDEOJUEGO
+    Representa la información general de un videojuego
+    ----------------------------------------
+    */
+    abstract class Videojuego
+    {
+        public int Id { get; private set; }
+        public string Titulo { get; private set; }
+        public string Genero { get; private set; }
+        public string Plataforma { get; private set; }
+        public int Anio { get; private set; }
+        public bool Disponible { get; private set; }
+
+        public Videojuego(int id, string titulo, string genero, string plataforma, int anio)
+        {
+            Id = id;
+            Titulo = titulo;
+            Genero = genero;
+            Plataforma = plataforma;
+            Anio = anio;
+            Disponible = true;
+        }
+
+        public void MarcarPrestado()
+        {
+            Disponible = false;
+        }
+
+        public void MarcarDevuelto()
+        {
+            Disponible = true;
+        }
+
+        public abstract string ObtenerTipo();
+
+        public virtual string MostrarInformacion()
+        {
+            return $"ID: {Id} | Título: {Titulo} | Género: {Genero} | Plataforma: {Plataforma} | Año: {Anio} | Tipo: {ObtenerTipo()} | Disponible: {(Disponible ? "Sí" : "No")}";
+        }
+    }
+
+    /*
+    ----------------------------------------
+    CLASE HIJA: VIDEOJUEGO FISICO
+    Agrega el formato físico del videojuego
+    ----------------------------------------
+    */
+    class VideojuegoFisico : Videojuego
+    {
+        public string EstadoDisco { get; private set; }
+
+        public VideojuegoFisico(int id, string titulo, string genero, string plataforma, int anio, string estadoDisco)
+            : base(id, titulo, genero, plataforma, anio)
+        {
+            EstadoDisco = estadoDisco;
+        }
+
+        public override string ObtenerTipo()
+        {
+            return "Físico";
+        }
+
+        public override string MostrarInformacion()
+        {
+            return base.MostrarInformacion() + $" | Estado del disco: {EstadoDisco}";
+        }
+    }
+
+    /*
+    ----------------------------------------
+    CLASE HIJA: VIDEOJUEGO DIGITAL
+    Agrega la tienda digital del videojuego
+    ----------------------------------------
+    */
+    class VideojuegoDigital : Videojuego
+    {
+        public string TiendaDigital { get; private set; }
+
+        public VideojuegoDigital(int id, string titulo, string genero, string plataforma, int anio, string tiendaDigital)
+            : base(id, titulo, genero, plataforma, anio)
+        {
+            TiendaDigital = tiendaDigital;
+        }
+
+        public override string ObtenerTipo()
+        {
+            return "Digital";
+        }
+
+        public override string MostrarInformacion()
+        {
+            return base.MostrarInformacion() + $" | Tienda: {TiendaDigital}";
+        }
+    }
+
+    /*
+    ----------------------------------------
+    CLASE USUARIO
+    Guarda la información de cada usuario registrado
+    ----------------------------------------
+    */
+    class Usuario
+    {
+        public int Id { get; private set; }
+        public string Nombre { get; private set; }
+        public string Correo { get; private set; }
+
+        public Usuario(int id, string nombre, string correo)
+        {
+            Id = id;
+            Nombre = nombre;
+            Correo = correo;
+        }
+
+        public string MostrarInformacion()
+        {
+            return $"ID Usuario: {Id} | Nombre: {Nombre} | Correo: {Correo}";
+        }
+    }
+
+    /*
+    ----------------------------------------
+    CLASE PRESTAMO
+    Relaciona un usuario con un videojuego prestado
+    ----------------------------------------
+    */
+    class Prestamo
+    {
+        public int Id { get; private set; }
+        public Usuario Usuario { get; private set; }
+        public Videojuego Videojuego { get; private set; }
+        public DateTime FechaPrestamo { get; private set; }
+        public DateTime? FechaDevolucion { get; private set; }
+
+        public Prestamo(int id, Usuario usuario, Videojuego videojuego)
+        {
+            Id = id;
+            Usuario = usuario;
+            Videojuego = videojuego;
+            FechaPrestamo = DateTime.Now;
+            FechaDevolucion = null;
+        }
+
+        public void RegistrarDevolucion()
+        {
+            FechaDevolucion = DateTime.Now;
+        }
+
+        public bool EstaActivo()
+        {
+            return FechaDevolucion == null;
+        }
+
+        public string MostrarInformacion()
+        {
+            string estado = EstaActivo() ? "Activo" : "Devuelto";
+            string fechaDev = FechaDevolucion.HasValue ? FechaDevolucion.Value.ToString("g") : "Pendiente";
+
+            return $"ID Préstamo: {Id} | Usuario: {Usuario.Nombre} | Juego: {Videojuego.Titulo} | Fecha préstamo: {FechaPrestamo:g} | Fecha devolución: {fechaDev} | Estado: {estado}";
+        }
+    }
+
+    /*
+    ----------------------------------------
+    CLASE PRINCIPAL DEL SISTEMA
+    Maneja videojuegos, usuarios y préstamos
+    ----------------------------------------
+    */
+    class BibliotecaVideojuegos
+    {
+        private List<Videojuego> videojuegos;
+        private List<Usuario> usuarios;
+        private List<Prestamo> prestamos;
+
+        private int siguienteIdJuego;
+        private int siguienteIdUsuario;
+        private int siguienteIdPrestamo;
+
+        public BibliotecaVideojuegos()
+        {
+            videojuegos = new List<Videojuego>();
+            usuarios = new List<Usuario>();
+            prestamos = new List<Prestamo>();
+
+            siguienteIdJuego = 1;
+            siguienteIdUsuario = 1;
+            siguienteIdPrestamo = 1;
+        }
+
+        /*
+        ----------------------------------------
+        REGISTRO DE VIDEOJUEGOS
+        Permite agregar juegos físicos o digitales
+        ----------------------------------------
+        */
+        public void RegistrarVideojuegoFisico(string titulo, string genero, string plataforma, int anio, string estadoDisco)
+        {
+            videojuegos.Add(new VideojuegoFisico(siguienteIdJuego++, titulo, genero, plataforma, anio, estadoDisco));
+        }
+
+        public void RegistrarVideojuegoDigital(string titulo, string genero, string plataforma, int anio, string tiendaDigital)
+        {
+            videojuegos.Add(new VideojuegoDigital(siguienteIdJuego++, titulo, genero, plataforma, anio, tiendaDigital));
+        }
+
+        /*
+        ----------------------------------------
+        REGISTRO DE USUARIOS
+        Agrega personas que pueden tomar juegos prestados
+        ----------------------------------------
+        */
+        public void RegistrarUsuario(string nombre, string correo)
+        {
+            usuarios.Add(new Usuario(siguienteIdUsuario++, nombre, correo));
+        }
+
+        /*
+        ----------------------------------------
+        BUSQUEDAS INTERNAS
+        Sirven para localizar juegos y usuarios por ID
+        ----------------------------------------
+        */
+        public Videojuego BuscarVideojuegoPorId(int id)
+        {
+            return videojuegos.FirstOrDefault(v => v.Id == id);
+        }
+
+        public Usuario BuscarUsuarioPorId(int id)
+        {
+            return usuarios.FirstOrDefault(u => u.Id == id);
+        }
+
+        public Prestamo BuscarPrestamoActivoPorJuego(int idJuego)
+        {
+            return prestamos.FirstOrDefault(p => p.Videojuego.Id == idJuego && p.EstaActivo());
+        }
+
+        /*
+        ----------------------------------------
+        PRÉSTAMO DE VIDEOJUEGOS
+        Valida disponibilidad y crea el préstamo
+        ----------------------------------------
+        */
+        public bool PrestarVideojuego(int idUsuario, int idJuego)
+        {
+            Usuario usuario = BuscarUsuarioPorId(idUsuario);
+            Videojuego videojuego = BuscarVideojuegoPorId(idJuego);
+
+            if (usuario == null || videojuego == null || !videojuego.Disponible)
+            {
+                return false;
+            }
+
+            videojuego.MarcarPrestado();
+            prestamos.Add(new Prestamo(siguienteIdPrestamo++, usuario, videojuego));
+            return true;
+        }
+
+        /*
+        ----------------------------------------
+        DEVOLUCIÓN DE VIDEOJUEGOS
+        Marca el juego como disponible otra vez
+        ----------------------------------------
+        */
+        public bool DevolverVideojuego(int idJuego)
+        {
+            Prestamo prestamo = BuscarPrestamoActivoPorJuego(idJuego);
+
+            if (prestamo == null)
+            {
+                return false;
+            }
+
+            prestamo.RegistrarDevolucion();
+            prestamo.Videojuego.MarcarDevuelto();
+            return true;
+        }
+
+        /*
+        ----------------------------------------
+        LISTADOS DEL SISTEMA
+        Muestran la información guardada en la biblioteca
+        ----------------------------------------
+        */
+        public void MostrarVideojuegos()
+        {
+            if (videojuegos.Count == 0)
+            {
+                Console.WriteLine("No hay videojuegos registrados.");
+                return;
+            }
+
+            foreach (var videojuego in videojuegos)
+            {
+                Console.WriteLine(videojuego.MostrarInformacion());
+            }
+        }
+
+        public void MostrarVideojuegosDisponibles()
+        {
+            var disponibles = videojuegos.Where(v => v.Disponible).ToList();
+
+            if (disponibles.Count == 0)
+            {
+                Console.WriteLine("No hay videojuegos disponibles.");
+                return;
+            }
+
+            foreach (var videojuego in disponibles)
+            {
+                Console.WriteLine(videojuego.MostrarInformacion());
+            }
+        }
+
+        public void MostrarUsuarios()
+        {
+            if (usuarios.Count == 0)
+            {
+                Console.WriteLine("No hay usuarios registrados.");
+                return;
+            }
+
+            foreach (var usuario in usuarios)
+            {
+                Console.WriteLine(usuario.MostrarInformacion());
+            }
+        }
+
+        public void MostrarPrestamos()
+        {
+            if (prestamos.Count == 0)
+            {
+                Console.WriteLine("No hay préstamos registrados.");
+                return;
+            }
+
+            foreach (var prestamo in prestamos)
+            {
+                Console.WriteLine(prestamo.MostrarInformacion());
+            }
+        }
+
+        /*
+        ----------------------------------------
+        FILTROS Y CONSULTAS
+        Permiten buscar juegos por nombre o género
+        ----------------------------------------
+        */
+        public void BuscarVideojuegoPorTitulo(string titulo)
+        {
+            var resultados = videojuegos
+                .Where(v => v.Titulo.IndexOf(titulo, StringComparison.OrdinalIgnoreCase) >= 0)
+                .ToList();
+
+            if (resultados.Count == 0)
+            {
+                Console.WriteLine("No se encontraron videojuegos con ese título.");
+                return;
+            }
+
+            foreach (var videojuego in resultados)
+            {
+                Console.WriteLine(videojuego.MostrarInformacion());
+            }
+        }
+
+        public void BuscarVideojuegoPorGenero(string genero)
+        {
+            var resultados = videojuegos
+                .Where(v => v.Genero.Equals(genero, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            if (resultados.Count == 0)
+            {
+                Console.WriteLine("No se encontraron videojuegos de ese género.");
+                return;
+            }
+
+            foreach (var videojuego in resultados)
+            {
+                Console.WriteLine(videojuego.MostrarInformacion());
+            }
+        }
+
+        /*
+        ----------------------------------------
+        DATOS DE PRUEBA
+        Permiten mostrar el sistema funcionando desde el inicio
+        ----------------------------------------
+        */
+        public void CargarDatosIniciales()
+        {
+            RegistrarUsuario("Justin", "justin@email.com");
+            RegistrarUsuario("Maria", "maria@email.com");
+
+            RegistrarVideojuegoFisico("The Last of Us", "Acción", "PS5", 2022, "Excelente");
+            RegistrarVideojuegoFisico("Mario Kart 8", "Carreras", "Nintendo Switch", 2017, "Bueno");
+            RegistrarVideojuegoDigital("Minecraft", "Sandbox", "PC", 2011, "Steam");
+            RegistrarVideojuegoDigital("Valorant", "Shooter", "PC", 2020, "Riot Games");
+        }
+    }
+
+    /*
+    ----------------------------------------
+    CLASE PROGRAM
+    Punto de entrada del sistema con menú interactivo
+    ----------------------------------------
+    */
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            BibliotecaVideojuegos biblioteca = new BibliotecaVideojuegos();
+            biblioteca.CargarDatosIniciales();
+
+            int opcion;
+
+            do
+            {
+                MostrarMenu();
+                opcion = LeerEntero("Seleccione una opción: ");
+
+                Console.WriteLine();
+
+                switch (opcion)
+                {
+                    case 1:
+                        RegistrarVideojuegoFisico(biblioteca);
+                        break;
+
+                    case 2:
+                        RegistrarVideojuegoDigital(biblioteca);
+                        break;
+
+                    case 3:
+                        RegistrarUsuario(biblioteca);
+                        break;
+
+                    case 4:
+                        biblioteca.MostrarVideojuegos();
+                        break;
+
+                    case 5:
+                        biblioteca.MostrarVideojuegosDisponibles();
+                        break;
+
+                    case 6:
+                        biblioteca.MostrarUsuarios();
+                        break;
+
+                    case 7:
+                        RealizarPrestamo(biblioteca);
+                        break;
+
+                    case 8:
+                        RealizarDevolucion(biblioteca);
+                        break;
+
+                    case 9:
+                        biblioteca.MostrarPrestamos();
+                        break;
+
+                    case 10:
+                        BuscarPorTitulo(biblioteca);
+                        break;
+
+                    case 11:
+                        BuscarPorGenero(biblioteca);
+                        break;
+
+                    case 0:
+                        Console.WriteLine("Saliendo del sistema...");
+                        break;
+
+                    default:
+                        Console.WriteLine("Opción no válida.");
+                        break;
+                }
+
+                Console.WriteLine();
+            }
+            while (opcion != 0);
+        }
+
+        /*
+        ----------------------------------------
+        MENÚ PRINCIPAL
+        Muestra todas las opciones del programa
+        ----------------------------------------
+        */
+        static void MostrarMenu()
+        {
+            Console.WriteLine("========================================");
+            Console.WriteLine("     BIBLIOTECA DE VIDEOJUEGOS");
+            Console.WriteLine("========================================");
+            Console.WriteLine("1. Registrar videojuego físico");
+            Console.WriteLine("2. Registrar videojuego digital");
+            Console.WriteLine("3. Registrar usuario");
+            Console.WriteLine("4. Mostrar todos los videojuegos");
+            Console.WriteLine("5. Mostrar videojuegos disponibles");
+            Console.WriteLine("6. Mostrar usuarios");
+            Console.WriteLine("7. Prestar videojuego");
+            Console.WriteLine("8. Devolver videojuego");
+            Console.WriteLine("9. Mostrar préstamos");
+            Console.WriteLine("10. Buscar videojuego por título");
+            Console.WriteLine("11. Buscar videojuego por género");
+            Console.WriteLine("0. Salir");
+            Console.WriteLine("========================================");
+        }
+
+        /*
+        ----------------------------------------
+        FUNCIONES DE APOYO
+        Sirven para leer datos de forma más segura
+        ----------------------------------------
+        */
+        static int LeerEntero(string mensaje)
+        {
+            int valor;
+            Console.Write(mensaje);
+
+            while (!int.TryParse(Console.ReadLine(), out valor))
+            {
+                Console.Write("Entrada inválida. Intente de nuevo: ");
+            }
+
+            return valor;
+        }
+
+        static string LeerTexto(string mensaje)
+        {
+            string texto;
+            Console.Write(mensaje);
+            texto = Console.ReadLine();
+
+            while (string.IsNullOrWhiteSpace(texto))
+            {
+                Console.Write("No puede dejar este campo vacío. Intente de nuevo: ");
+                texto = Console.ReadLine();
+            }
+
+            return texto;
+        }
+
+        /*
+        ----------------------------------------
+        OPCIONES DEL MENÚ
+        Cada función corresponde a una acción del sistema
+        ----------------------------------------
+        */
+        static void RegistrarVideojuegoFisico(BibliotecaVideojuegos biblioteca)
+        {
+            string titulo = LeerTexto("Título: ");
+            string genero = LeerTexto("Género: ");
+            string plataforma = LeerTexto("Plataforma: ");
+            int anio = LeerEntero("Año: ");
+            string estadoDisco = LeerTexto("Estado del disco: ");
+
+            biblioteca.RegistrarVideojuegoFisico(titulo, genero, plataforma, anio, estadoDisco);
+            Console.WriteLine("Videojuego físico registrado correctamente.");
+        }
+
+        static void RegistrarVideojuegoDigital(BibliotecaVideojuegos biblioteca)
+        {
+            string titulo = LeerTexto("Título: ");
+            string genero = LeerTexto("Género: ");
+            string plataforma = LeerTexto("Plataforma: ");
+            int anio = LeerEntero("Año: ");
+            string tienda = LeerTexto("Tienda digital: ");
+
+            biblioteca.RegistrarVideojuegoDigital(titulo, genero, plataforma, anio, tienda);
+            Console.WriteLine("Videojuego digital registrado correctamente.");
+        }
+
+        static void RegistrarUsuario(BibliotecaVideojuegos biblioteca)
+        {
+            string nombre = LeerTexto("Nombre del usuario: ");
+            string correo = LeerTexto("Correo: ");
+
+            biblioteca.RegistrarUsuario(nombre, correo);
+            Console.WriteLine("Usuario registrado correctamente.");
+        }
+
+        static void RealizarPrestamo(BibliotecaVideojuegos biblioteca)
+        {
+            int idUsuario = LeerEntero("ID del usuario: ");
+            int idJuego = LeerEntero("ID del videojuego: ");
+
+            bool resultado = biblioteca.PrestarVideojuego(idUsuario, idJuego);
+
+            if (resultado)
+            {
+                Console.WriteLine("Préstamo realizado correctamente.");
+            }
+            else
+            {
+                Console.WriteLine("No se pudo realizar el préstamo. Verifique el ID o la disponibilidad del juego.");
+            }
+        }
+
+        static void RealizarDevolucion(BibliotecaVideojuegos biblioteca)
+        {
+            int idJuego = LeerEntero("ID del videojuego a devolver: ");
+
+            bool resultado = biblioteca.DevolverVideojuego(idJuego);
+
+            if (resultado)
+            {
+                Console.WriteLine("Devolución realizada correctamente.");
+            }
+            else
+            {
+                Console.WriteLine("No se encontró un préstamo activo para ese videojuego.");
+            }
+        }
+
+        static void BuscarPorTitulo(BibliotecaVideojuegos biblioteca)
+        {
+            string titulo = LeerTexto("Ingrese el título a buscar: ");
+            biblioteca.BuscarVideojuegoPorTitulo(titulo);
+        }
+
+        static void BuscarPorGenero(BibliotecaVideojuegos biblioteca)
+        {
+            string genero = LeerTexto("Ingrese el género a buscar: ");
+            biblioteca.BuscarVideojuegoPorGenero(genero);
+        }
+    }
+}
