@@ -1,0 +1,132 @@
+from flask import Flask, request, jsonify
+import jwt
+from functools import wraps
+
+app = Flask(__name__)
+secret_key = "secret"
+
+@app.route('/login', methods=['POST'])
+def login():
+    try:
+        username = request.json.get('username')
+        password = request.json.get('password')
+        if username is None or password is None:
+            return jsonify({'message': 'Both username and password are required'}), 400
+        if username == "admin" and password == "123":
+            token = jwt.encode({'username': username}, secret_key, algorithm='HS256')
+            return jsonify({'token': token}), 200
+        
+        return jsonify({'message': 'Authentication failed'}), 401
+    except Exception as e:
+        print(e)
+        return jsonify({'message': 'Internal server error'}), 500
+
+def verify_token(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        token = request.headers.get('Authorization', '')
+        if not token:
+            return jsonify({'message': 'Token not provided'}), 401
+        token_parts = token.split(" ")
+        if len(token_parts) != 2 or token_parts[0].lower() != 'bearer':
+            return jsonify({'message': 'Invalid token format'}), 401
+        token = token_parts[1]
+        try:
+            payload = jwt.decode(token, secret_key, algorithms=['HS256'])
+            request.username = payload['username']
+            return func(*args, **kwargs)
+        except jwt.ExpiredSignatureError:
+            return jsonify({'message': 'Token expired'}), 403
+        except jwt.InvalidTokenError:
+            return jsonify({'message': 'Invalid token'}), 403
+    return wrapper
+
+@app.route('/protected', methods=['GET'])
+@verify_token
+def protected():
+    return jsonify({'message': 'You have access'}), 200
+
+
+# -------------------------------
+# OPERACIÓN 1: SUMA
+# -------------------------------
+@app.route('/sumar', methods=['POST'])
+@verify_token
+def sumar():
+    try:
+        num1 = request.json.get('num1')
+        num2 = request.json.get('num2')
+
+        if num1 is None or num2 is None:
+            return jsonify({'message': 'Debe enviar num1 y num2'}), 400
+
+        resultado = num1 + num2
+
+        return jsonify({
+            'operacion': 'Suma',
+            'num1': num1,
+            'num2': num2,
+            'resultado': resultado
+        }), 200
+
+    except Exception as e:
+        print(e)
+        return jsonify({'message': 'Error al realizar la suma'}), 500
+
+
+# -------------------------------
+# OPERACIÓN 2: MULTIPLICACIÓN
+# -------------------------------
+@app.route('/multiplicar', methods=['POST'])
+@verify_token
+def multiplicar():
+    try:
+        num1 = request.json.get('num1')
+        num2 = request.json.get('num2')
+
+        if num1 is None or num2 is None:
+            return jsonify({'message': 'Debe enviar num1 y num2'}), 400
+
+        resultado = num1 * num2
+
+        return jsonify({
+            'operacion': 'Multiplicación',
+            'num1': num1,
+            'num2': num2,
+            'resultado': resultado
+        }), 200
+
+    except Exception as e:
+        print(e)
+        return jsonify({'message': 'Error al realizar la multiplicación'}), 500
+
+
+# -------------------------------
+# OPERACIÓN 3: CONVERSIÓN DE DÓLARES A PESOS
+# -------------------------------
+@app.route('/dolares-a-pesos', methods=['POST'])
+@verify_token
+def dolares_a_pesos():
+    try:
+        dolares =int(request.json.get('dolares'))
+
+        if dolares is None:
+            return jsonify({'message': 'Debe enviar la cantidad de dolares'}), 400
+
+        tasa = 59
+        pesos = dolares * tasa
+
+        return jsonify({
+            'operacion': 'Conversión de dólares a pesos dominicanos',
+            'dolares': dolares,
+            'tasa': tasa,
+            'pesos': pesos
+        }), 200
+
+    except Exception as e:
+        print(e)
+        return jsonify({'message': 'Error al realizar la conversión'}), 500
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
