@@ -1,0 +1,208 @@
+import { useState } from "react";
+import "./App.css";
+
+function App() {
+  const [opinion, setOpinion] = useState("");
+  const [asignatura, setAsignatura] = useState("");
+  const [modalidad, setModalidad] = useState("");
+
+  const limpiarFormulario = () => {
+    setOpinion("");
+    setAsignatura("");
+    setModalidad("");
+  };
+
+  return (
+    <div className="contenedor">
+      <h1>Práctica Semana 10 - Justin</h1>
+      <p>
+        Formulario en React utilizando textarea, select y un grupo de radio,
+        todos enlazados a variables de estado con useState.
+      </p>
+
+      <form className="formulario">
+        <div className="campo">
+          <label htmlFor="opinion">Opinión sobre la clase:</label>
+          <textarea
+            id="opinion"
+            value={opinion}
+            onChange={(e) => setOpinion(e.target.value)}
+            placeholder="Escribe tu opinión sobre la clase..."
+            rows="5"
+          ></textarea>
+        </div>
+
+        <div className="campo">
+          <label htmlFor="asignatura">Selecciona una asignatura:</label>
+          <select
+            id="asignatura"
+            value={asignatura}
+            onChange={(e) => setAsignatura(e.target.value)}
+          >
+            <option value="">-- Selecciona una opción --</option>
+            <option value="Programación II">Programación II</option>
+            <option value="Base de Datos">Base de Datos</option>
+            <option value="Redes de Computadoras">Redes de Computadoras</option>
+            <option value="Diseño Web">Diseño Web</option>
+          </select>
+        </div>
+
+        <div className="campo">
+          <label>Selecciona la modalidad de estudio:</label>
+
+          <div className="opcion-radio">
+            <input
+              type="radio"
+              id="presencial"
+              name="modalidad"
+              value="Presencial"
+              checked={modalidad === "Presencial"}
+              onChange={(e) => setModalidad(e.target.value)}
+            />
+            <label htmlFor="presencial">Presencial</label>
+          </div>
+
+          <div className="opcion-radio">
+            <input
+              type="radio"
+              id="virtual"
+              name="modalidad"
+              value="Virtual"
+              checked={modalidad === "Virtual"}
+              onChange={(e) => setModalidad(e.target.value)}
+            />
+            <label htmlFor="virtual">Virtual</label>
+          </div>
+
+          <div className="opcion-radio">
+            <input
+              type="radio"
+              id="hibrida"
+              name="modalidad"
+              value="Híbrida"
+              checked={modalidad === "Híbrida"}
+              onChange={(e) => setModalidad(e.target.value)}
+            />
+            <label htmlFor="hibrida">Híbrida</label>
+          </div>
+        </div>
+
+        <button type="button" onClick={limpiarFormulario}>
+          Limpiar formulario
+        </button>
+      </form>
+
+      <div className="resultado">
+        <h2>Datos seleccionados</h2>
+
+        <p>
+          <strong>Opinión:</strong>{" "}
+          {opinion || "No se ha escrito ninguna opinión"}
+        </p>
+
+        <p>
+          <strong>Asignatura:</strong>{" "}
+          {asignatura || "No se ha seleccionado ninguna asignatura"}
+        </p>
+
+        <p>
+          <strong>Modalidad:</strong>{" "}
+          {modalidad || "No se ha seleccionado ninguna modalidad"}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+export default App;
+
+
+
+
+// CSS
+
+
+
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f3f4f6;
+}
+
+.contenedor {
+  max-width: 700px;
+  margin: 40px auto;
+  background-color: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+h1 {
+  text-align: center;
+  color: #1f2937;
+}
+
+p {
+  color: #374151;
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+label {
+  font-weight: bold;
+}
+
+textarea,
+select {
+  padding: 10px;
+  border: 1px solid #9ca3af;
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.opcion-radio {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.opcion-radio label {
+  font-weight: normal;
+}
+
+button {
+  padding: 12px;
+  border: none;
+  background-color: #16a34a;
+  color: white;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #15803d;
+}
+
+.resultado {
+  margin-top: 30px;
+  padding: 20px;
+  background-color: #dcfce7;
+  border-radius: 10px;
+}
